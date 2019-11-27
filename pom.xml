@@ -22,7 +22,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>4.1.11</version>
+            <version>5.0.6</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
