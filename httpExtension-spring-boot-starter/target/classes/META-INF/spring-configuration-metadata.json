@@ -1,0 +1,30 @@
+{
+  "groups": [
+    {
+      "name": "httpextension",
+      "type": "lz.com.http.spring.boot.autoconfigure.HttpExtensionProperties",
+      "sourceType": "lz.com.http.spring.boot.autoconfigure.HttpExtensionProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "httpextension.name",
+      "type": "java.lang.String",
+      "description": "姓名",
+      "sourceType": "lz.com.http.spring.boot.autoconfigure.HttpExtensionProperties",
+      "defaultValue": "美年达"
+    },
+    {
+      "name": "httpextension.url-mapper-locations",
+      "type": "java.lang.String[]",
+      "sourceType": "lz.com.http.spring.boot.autoconfigure.HttpExtensionProperties"
+    },
+    {
+      "name": "httpextension.urlMapperLocations",
+      "type": "java.util.List",
+      "description": "url 资源文件",
+      "defaultValue": "api.properties"
+    }
+  ],
+  "hints": []
+}

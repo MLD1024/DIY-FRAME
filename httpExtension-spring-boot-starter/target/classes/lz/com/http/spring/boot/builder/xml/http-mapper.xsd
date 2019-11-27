@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+       Copyright 2009-2018 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+<xs:schema
+        xmlns="http://www.w3school.com.cn"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.w3school.com.cn"
+        elementFormDefault="qualified">
+    <xs:element name="mapper">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="resultMap"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="url"/>
+            </xs:choice>
+            <xs:attribute name="namespace"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="resultMap">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="result"/>
+            </xs:sequence>
+            <xs:attribute name="id" use="required"/>
+            <xs:attribute name="type" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="result">
+        <xs:complexType>
+            <xs:attribute name="beanProperty"/>
+            <xs:attribute name="resultProperty"/>
+            <xs:attribute name="type"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="url">
+        <xs:complexType mixed="true">
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="property"/>
+            </xs:sequence>
+            <xs:attribute name="resultMap"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="property">
+        <xs:complexType>
+            <xs:attribute name="name" use="required"/>
+            <xs:attribute name="value" use="required"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

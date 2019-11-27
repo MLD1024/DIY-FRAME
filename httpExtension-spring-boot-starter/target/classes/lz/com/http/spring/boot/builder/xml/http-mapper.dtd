@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!ELEMENT mapper (url* | resultMap* )+>
+        <!ATTLIST mapper namespace CDATA #IMPLIED>
+        <!ELEMENT url (#PCDATA | property)*>
+        <!ATTLIST url
+                resultMap CDATA #REQUIRED
+                >
+        <!ELEMENT resultMap (result)*>
+        <!ATTLIST resultMap
+                id CDATA #REQUIRED
+                type CDATA #IMPLIED
+                >
+        <!ELEMENT property EMPTY>
+        <!ATTLIST property
+                name CDATA #REQUIRED
+                value CDATA #REQUIRED
+                >
+        <!ELEMENT result EMPTY>
+        <!ATTLIST result
+                beanProperty CDATA #REQUIRED
+                resultProperty CDATA #REQUIRED
+                type CDATA #IMPLIED
+                >

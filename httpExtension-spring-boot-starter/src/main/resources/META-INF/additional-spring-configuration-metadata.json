@@ -1,0 +1,16 @@
+{
+  "properties": [
+    {
+      "defaultValue": "美年达",
+      "name": "httpextension.name",
+      "description": "姓名",
+      "type": "java.lang.String"
+    },
+    {
+      "defaultValue": "api.properties",
+      "name": "httpextension.urlMapperLocations",
+      "description": "url 资源文件",
+      "type": "java.util.List"
+    }
+  ]
+}
