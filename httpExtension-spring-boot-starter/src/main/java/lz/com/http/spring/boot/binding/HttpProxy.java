@@ -3,19 +3,13 @@ package lz.com.http.spring.boot.binding;
 import com.alibaba.fastjson.JSON;
 import lz.com.http.spring.boot.annotations.MethodType;
 import lz.com.http.spring.boot.config.HttpExtensionConfiguration;
-import lz.com.http.spring.boot.config.HttpResultMap;
-import lz.com.http.spring.boot.executor.HttpExecutor;
+import lz.com.http.spring.boot.executor.DefaultResultHandler;
+import lz.com.http.spring.boot.executor.GetMethod;
+import lz.com.http.spring.boot.executor.HttpMethod;
+import lz.com.http.spring.boot.executor.PostMethod;
 import lz.com.http.spring.boot.mapping.HttpMappedStatement;
-import lz.com.http.spring.boot.reflection.Invoker;
-import lz.com.http.spring.boot.reflection.MetaClass;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.util.StringUtils;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -41,47 +35,45 @@ public class HttpProxy implements InvocationHandler {
         MethodType annotation = method.getAnnotation(MethodType.class);
         HttpType type = annotation.method();
 
+
         // step2 获取方法的名字
-        // String apiName = method.getName();
         String apiName = annotation.name();
         if ("".equals(apiName)) {
             apiName = method.getName();
         }
         HttpMappedStatement httpMappedStatement = configuration.httpMappedStatementMap.get(apiName);
         String url = httpMappedStatement.getUrl();
-        // step3 拼装map参数
-        HashMap<String, Object> paramMap = new HashMap<>();
-        Parameter[] parameters = method.getParameters();
-        for (int i = 0; i < parameters.length; i++) {
-            paramMap.put(parameters[i].getName(), args[i].toString());
+
+
+        // step3 封装httpMethod 对象
+        HttpMethod httpMethod = null;
+        switch (type) {
+            case GET:
+                // step3 拼装map参数
+                HashMap<String, Object> paramMap = new HashMap<>();
+                Parameter[] parameters = method.getParameters();
+                for (int i = 0; i < parameters.length; i++) {
+                    paramMap.put(parameters[i].getName(), args[i].toString());
+                }
+                httpMethod = new GetMethod(url, paramMap);
+                break;
+            case POST:
+                // step3 拼装map参数
+                String paramJson = JSON.toJSONString(args[0]);
+                httpMethod = new PostMethod(url, paramJson);
+                break;
+            default:
+                throw new RuntimeException("不存在" + type + "方法");
         }
 
         // step4 获取返回类型
-        Class<?> returnType = method.getReturnType();
-
+        Type returnType = method.getGenericReturnType();
         // step5 执行请求
-        String response = HttpExecutor.execute(paramMap, url, type);
-        Map<String, String> resultMap = httpMappedStatement.getResultMap();
-        HttpResultMap httpResultMap = new HttpResultMap();
-        MetaClass metaClass = new MetaClass(HttpResultMap.class);
-        Map<String, Invoker> setMethods = metaClass.getSetMethods();
-        if (resultMap != null) {
-            Map map = JSON.parseObject(response, Map.class);
-            Set<String> resultPropertys = resultMap.keySet();
-            for (String resultProperty : resultPropertys) {
-                // value
-                Object value = map.get(resultProperty);
-                // property
-                String beanProperty = resultMap.get(resultProperty);
-                Invoker invoker = setMethods.get(beanProperty);
-                invoker.invoke(httpResultMap, value);
-            }
-        } else {
-            return JSON.parseObject(response, returnType);
-        }
-        // step6 处理返回结果
-        String s = JSON.toJSONString(httpResultMap.getData());
-        return JSON.parseObject(s, returnType);
+        String response = httpMethod.execute();
+        return  DefaultResultHandler.handler(response,httpMappedStatement,returnType);
+
+
+
 
     }
 }

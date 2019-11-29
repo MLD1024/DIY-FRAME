@@ -20,10 +20,10 @@ import java.util.Map;
 public interface HttpMethod {
     OkHttpClient okHttpClient = OkHttpConfiguration.okHttpClient();
 
-    String request(String url, Map<String, Object> paramsMap) throws IOException;
-
     default String run(Request request) throws IOException {
         Response response = okHttpClient.newCall(request).execute();
         return response.body().string();
     }
+
+    String execute();
 }
